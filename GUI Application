@@ -1,0 +1,38 @@
+from tkinter import *
+
+
+window = Tk()
+#window gemetry and components
+window.geometry("900x900")
+photo = PhotoImage(file = 'iz logo.png')
+window.title("Initiative Z Reverse Vending Machine")
+icon = PhotoImage(file='iz logo.png')
+window.iconphoto(True,icon)
+window.config(background="white")
+
+#Colour setting
+user_input_frame = '#e7e6f0'
+user_entry_box = 'white'
+
+#Frame
+frame = Frame(window, height=100, width=400, bg = user_input_frame, bd=50,relief=FLAT)
+frame.place(x=180,y=320)
+
+#User input
+username_entry_var = StringVar()
+username_entry= Entry(window, width=20, font=('Times New Roman',12), fg='black', bg=user_entry_box, textvariable=username_entry_var)
+username_entry.place(x=275,y=350)
+
+#Button
+submit_button = Button(window, bg='white', relief=RAISED, text="Submit", command ='')
+submit_button.place(x=490, y=348)
+
+#Labels
+welcome_title = Label(window,text="Welcome to Iniative Z Reverse Vending Machine Application",font=('Times New Roman',18,'bold'),
+              fg = 'black',bg='white', image= photo, compound= 'top')
+welcome_title.pack()
+                  
+username_label = Label(window,text="Username:", font= ('Times New Roman',12), fg= 'black', bg='#e7e6f0')
+username_label.place(x=190,y=350)
+                  
+window.mainloop()
