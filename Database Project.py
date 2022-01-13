@@ -44,22 +44,17 @@ class SelectionPage(tk.Frame):
 
         self.button_clicks = 0
 
-        # Machine activation
+        # Machine activation to simulate the number of times users use the machine
+        # Forgot to use delete() method to clear the previous user input thus user need to restart the program. 
         def start_machine():
             select_button['state'] = 'disabled'
             select_button.update()
             time.sleep(2)
             self.button_clicks += 1
             select_button ['text'] = "Total Clciks: " + str(self.button_clicks)
-            #top = tk.Toplevel()
-            #top.title('DONE')
-            #tk.Message(top, text="loading",padx=20,pady=20).pack()
-            #top.after(5000, top.destroy)
             select_button.config(state='normal')
             select_button.update()
             return int(self.button_clicks)
-
-        
 
         # Label
         select_label=tk.Label(self, text="RVM application", font=(FONT,12))
@@ -70,10 +65,9 @@ class SelectionPage(tk.Frame):
         select_button.place(x=200, y=150)
         username_label = tk.Label(self, text="Student ID:", font=(FONT, 14),bg='#d7ded9')
         username_label.place(x=200, y=240)
-        #password_label = tk.Label(self, text="Password:", font=(FONT,14), bg='#d7ded9')
-        #password_label.place(x=200, y=300)
 
-        # Student ID and password entry
+
+        # Student ID
         username_entry = tk.Entry(self, width=30, font=(FONT, 12))
         username_entry.place(x=305, y=242)
 
@@ -98,6 +92,7 @@ class SelectionPage(tk.Frame):
 
                         
          # Sign Up Function
+         #this is a function to generate a small pop up window for users to resgister their info
         def register():
             window1 = tk.Tk()
             window1.geometry("400x200")
@@ -118,11 +113,13 @@ class SelectionPage(tk.Frame):
             label2_entry = tk.Entry(window1, width=30, font=(FONT, 12),)
             label2_entry.place(x=130, y=85)
             
-            def signup_db(): #login to database and register new students
+            #login to database and register new students
+            def signup_db(): 
                 student_NAME = label1_entry.get()
                 student_ID = label2_entry.get()
                 points = str(0)
                 
+                # to avoid users leave either student name and ID entry box blank
                 if student_NAME=="" or student_ID=="":
                     messagebox.showerror("Error","All fields are required")
                 else:
@@ -150,6 +147,7 @@ class SelectionPage(tk.Frame):
         submit_button.place(x=585, y=365)
         register_button = tk.Button(self, text="Sign Up", font=(FONT, 13), command=register)
         register_button.place(x=480, y=365)
+        
 
  # page1 and page2 class are not used atm
 class page1(tk.Frame):
