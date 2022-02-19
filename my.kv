@@ -1,0 +1,82 @@
+
+
+<mainPage>
+    name: "main"
+
+    BoxLayout:
+        orientation: 'vertical'
+        studentID: studentID
+        size: root.width, root.height
+        orientation: 'vertical'
+        padding: 50
+
+        canvas.before:
+            Color:
+                rgba: 0.945, 1, 1, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        BoxLayout:
+            orientation: 'vertical'
+            Image:
+                source: './images/ucsilogo.png'
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label: 
+                text: "Student ID"
+                color: 0, 0, 0, 1
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 20
+            TextInput: 
+                id: studentID
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: root.keyboard()
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 250, 20
+            Button:
+                size: self.parent.size
+                text: "Start"
+                background_color: (0.3922, 0.5843, 0.9294, 1)
+                on_release: 
+                    app.root.manager.current = "prompt"
+
+        BoxLayout:
+            Label: 
+                text: "How to use"
+                color: 0, 0, 0, 1
+                underline: True
+
+<promptPage>
+    name: "prompt"
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        canvas.before:
+            Color:
+                rgba: 0.945, 1, 1, 1
+            Rectangle:
+                source: './images/start(horizontal).png'
+                size: self.size
+                pos: self.pos
+
+    
+<loadingPage>
+    name: "loading"
+    BoxLayout:
+        size: root.width, root.height
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.945, 1, 1, 1
+            Rectangle:
+                source: './images/loading.png'
+                size: self.size
+                pos: self.pos
