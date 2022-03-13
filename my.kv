@@ -11,7 +11,7 @@ WindowManager:
         studentID: studentID
         size: root.width, root.height
         orientation: 'vertical'
-        padding: 50
+        padding: 70
 
         canvas.before:
             Color:
@@ -26,15 +26,12 @@ WindowManager:
                 source: './images/ucsilogo.png'
 
         BoxLayout:
-            orientation: 'vertical'
+            orientation: 'horizontal'
+            padding: 20
             Label: 
                 text: "Student ID"
                 color: 0, 0, 0, 1
-            
-
-        BoxLayout:
-            orientation: 'vertical'
-            padding: 20
+                
             TextInput: 
                 id: studentID
                 size: self.parent.size
@@ -44,6 +41,23 @@ WindowManager:
                     root.start()
                 on_touch_down: 
                     root.keyboard()
+                    
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "ELE Course Code"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentELE
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_text: 
+                    root.start()
+                on_touch_down: 
+                    root.keyboard()
+           
 
         BoxLayout:
             orientation: 'vertical'
@@ -57,12 +71,121 @@ WindowManager:
                 on_release: 
                     root.integer()
                     
-
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 250, 20
+            Button:
+                id: registerbtn
+                size: self.parent.size
+                text: "Register"
+                background_color: (0.3922, 0.5843, 0.9294, 1)
+                disabled: False
+                on_release:
+                    root.register()
+                    
         BoxLayout:
             Label: 
                 text: "How to use"
                 color: 0, 0, 0, 1
                 underline: True
+                
+<registerPage>:
+    name: "register"
+
+    BoxLayout:
+        orientation: 'vertical'
+        studentID: studentID
+        size: root.width, root.height
+        orientation: 'vertical'
+        padding: 75
+
+        canvas.before:
+            Color:
+                rgba: 0.945, 1, 1, 1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "Student Name"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentName
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: 
+                    root.keyboard()
+                    
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "Student ID"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentID
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: 
+                    root.keyboard()
+                    
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "Programme (ShortForm)"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentProgramme
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: 
+                    root.keyboard()
+                    
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "Student Email"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentEmail
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: 
+                    root.keyboard()
+
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 20
+            Label: 
+                text: "Student Phone"
+                color: 0, 0, 0, 1
+            TextInput: 
+                id: studentPhone
+                size: self.parent.size
+                multiline: False
+                background_color: (1, 1, 1, 1)
+                on_touch_down: 
+                    root.keyboard()
+        BoxLayout:
+            orientation: 'vertical'
+            padding: 250, 20
+            Button:
+                id: completebtn
+                size: self.parent.size
+                text: "Complete"
+                background_color: (0.3922, 0.5843, 0.9294, 1)
+                disabled: False #ori is True
+                on_release: 
+                    root.mainpage()
 
 <promptPage>
     name: "prompt"
