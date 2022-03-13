@@ -33,7 +33,10 @@ class mainPage(Screen):
         print(self.ids.studentID.text)
         print("Student ID:", self.ids.studentID.text)
 
-    
+    # to register new user into db
+    def register(self):
+        App.get_running_app().root.current = "register"
+        
     def integer(self):
         result = database.alltables(database)
         array = []
@@ -50,6 +53,29 @@ class mainPage(Screen):
 # app.root.current = "prompt"
 #                     root.manager.transition.direction = "left"
 
+# registerPage Class******************************************************************************
+
+class registerPage(Screen):
+    studentName = ObjectProperty(None)
+    studentID = ObjectProperty(None)
+    studentProgramme= ObjectProperty(None)
+    studentEmail = ObjectProperty(None)
+    studentPhone = ObjectProperty(None)
+    
+    def keyboard(self):
+        keyboard = VKeyboard()
+        # database.insert(database)
+        # database.alltables(database)
+        # database.read(database)
+        return keyboard
+
+    def mainpage(self):
+        database.create(database, self.ids.studentID.text)
+        App.get_running_app().root.transition.direction = "right"
+        App.get_running_app().root.current = "main"
+        
+# end of registerPage Class*************************************************************************
+        
 class promptPage(Screen):
     pass
 
@@ -108,7 +134,8 @@ class database():
 kv = Builder.load_file("my.kv")
 
 sm = WindowManager()
-screens = [mainPage(name="main"), promptPage(name="prompt"), loadingPage(name="loading")]
+# registerPage is added to allow navigation to registerPage when register button is clicked
+screens = [mainPage(name="main"), registerPage(name="register"), promptPage(name="prompt"), loadingPage(name="loading")]
 for screen in screens:
     sm.add_widget(screen)
 
