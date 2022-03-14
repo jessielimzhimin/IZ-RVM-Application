@@ -76,7 +76,26 @@ class registerPage(Screen):
         # database.alltables(database)
         # database.read(database)
         return keyboard
+    
+    def completebtn(self):
+        Id = self.ids.studentID.text
+        name = self.ids.studentName.text
+        programme = self.ids.studentProgramme.text
+        email = self.ids.studentEmail.text
+        phone = self.ids.studentPhone.text
+        bool_name = any([char.isdigit() for char in name])
+        bool_programme = any([char.isdigit() for char in programme])
 
+        if Id == "" and name == "" and programme == "" and email =="" and phone=="" or ((bool_name == True) or (bool_programme == True)):
+            self.ids.completebtn.disabled = True
+        else:
+            try:
+                type_id = int(Id)
+                type_phone = int(phone)
+                self.ids.completebtn.disabled = False
+            except Exception as es:
+                self.ids.completebtn.disabled = True
+                
     def mainpage(self):
         database.create(database, 
                         self.ids.studentID.text, 
