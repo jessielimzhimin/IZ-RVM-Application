@@ -16,6 +16,7 @@ Config.set('kivy', 'keyboard_mode', 'systemanddock')
 
 class mainPage(Screen):
     studentID = ObjectProperty(None)
+    studentELE = ObjectProperty(None)
 
     def keyboard(self):
         keyboard = VKeyboard()
@@ -26,29 +27,36 @@ class mainPage(Screen):
 
     def start(self):
         # if len(self.ids.studentID.text) != 10 and type(self.ids)
-        if len(self.ids.studentID.text) != 10 and type(int(self.ids.studentID.text)) != "int":
+        if len(self.ids.studentID.text) != 10 or len(self.ids.studentELE.text) != 4 :
             self.ids.startbtn.disabled = True
         else:
-            self.ids.startbtn.disabled = False
+            try:
+                type_id = int(self.ids.studentID.text)
+                type_ele = int(self.ids.studentELE.text)
+                self.ids.startbtn.disabled =False
+            except Exception as es:
+                self.ids.startbtn.disabled = True
+                
         print(self.ids.studentID.text)
         print("Student ID:", self.ids.studentID.text)
 
     # to register new user into db
     def register(self):
+        App.get_running_app().root.transition.direction = "left"
         App.get_running_app().root.current = "register"
         
     def integer(self):
         result = database.alltables(database)
         array = []
         for i in result:
-            array.append(i["Tables_in_rvm"])
-        if "'" + self.ids.studentID.text + "'" in array:
+            array.append(i['id'])
+        if int(self.ids.studentID.text) in array:
+            database.insert_ELE(database, self.ids.studentELE.text, self.ids.studentID.text)
             App.get_running_app().root.transition.direction = "left"
             App.get_running_app().root.current = "prompt"
         else:
-            database.create(database, self.ids.studentID.text)
             App.get_running_app().root.transition.direction = "left"
-            App.get_running_app().root.current = "prompt"
+            App.get_running_app().root.current = "register"
 
 # app.root.current = "prompt"
 #                     root.manager.transition.direction = "left"
@@ -70,7 +78,12 @@ class registerPage(Screen):
         return keyboard
 
     def mainpage(self):
-        database.create(database, self.ids.studentID.text)
+        database.create(database, 
+                        self.ids.studentID.text, 
+                        self.ids.studentName.text, 
+                        self.ids.studentProgramme.text, 
+                        self.ids.studentPhone.text, 
+                        self.ids.studentEmail.text)
         App.get_running_app().root.transition.direction = "right"
         App.get_running_app().root.current = "main"
         
@@ -101,21 +114,37 @@ class database():
             print("error")
             raise Exception("error connecting to DB")
 
-    def create(self, studentID):
+    def create(self, studentID, studentName, studentProgramme, studentPhone, studentEmail):
         connection = self.connection()
         with connection.cursor() as cursor:
-            cmd = "CREATE TABLE `%s` (itemName TEXT(30), category TEXT(30), points INT(3))"
-            cursor.execute(cmd, str(studentID))
+            cmd = "INSERT INTO student (id, name, programme, contact, email) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(cmd, (studentID, studentName, studentProgramme, studentPhone, studentEmail))
+            connection.commit()
 
 
     def read(self, studentID):
         connection = self.connection()
         with connection.cursor() as cursor:
-            cmd = "SELECT * FROM  `%s`"
-            cursor.execute(cmd, studentID)
+            cmd = "SELECT * FROM  student"
+            cursor.execute(cmd)
             result = cursor.fetchall()
             print(result)
+            
+    def insert_ELE(self, studentELE, studentID):
+        connection = self.connection()
+        with connection.cursor() as cursor:
+            cmd = "UPDATE student set ele_code = concat("'"MPU"'", + %s) WHERE id = %s"
+            cursor.execute(cmd, (studentELE, studentID))
+            connection.commit()
     
+    def insert_points(self):
+        connection = self.connection()
+        with connection.cursor() as cursor:
+            cmd ="UPDATE student set points = points + %s WHERE id = %s"
+            #"INSERT INTO student (studentID, points, items) VALUES (%s, %s, %s)"
+            cursor.execute(cmd, (point, studentID))
+            connection.commit()
+            
     def insert(self):
         connection = self.connection()
         with connection.cursor() as cursor:
@@ -126,9 +155,10 @@ class database():
     def alltables(self):
         connection = self.connection()
         with connection.cursor() as cursor:
-            cmd = "SHOW TABLES"
+            cmd = "SELECT id FROM student"
             cursor.execute(cmd)
             result = cursor.fetchall()
+            connection.commit()
             return result
 
 kv = Builder.load_file("my.kv")
