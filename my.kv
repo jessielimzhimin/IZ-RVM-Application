@@ -94,7 +94,6 @@ WindowManager:
 
     BoxLayout:
         orientation: 'vertical'
-        studentID: studentID
         size: root.width, root.height
         orientation: 'vertical'
         padding: 75
@@ -196,6 +195,9 @@ WindowManager:
                 disabled: True
                 on_release: 
                     root.mainpage()
+                    
+<Vkeyboard>:
+    layout:'numeric.json'
 
 <promptPage>
     name: "prompt"
