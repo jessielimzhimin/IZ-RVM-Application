@@ -193,8 +193,8 @@ class database():
     def connection():
         connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='password',
-                             database='rvm1',
+                             password='Mysql0644961',
+                             database='RVM',
                              cursorclass=pymysql.cursors.DictCursor)
         if connection:
             print("success")
@@ -255,7 +255,7 @@ class database():
             connection = pymysql.connect(host='localhost',
                              user=username,
                              password=password,
-                             database='rvm1',
+                             database='RVM',
                              cursorclass=pymysql.cursors.DictCursor)
             if connection:
                 df = sql.read_sql('select * from student', connection)
