@@ -1,3 +1,4 @@
+from pymysql import *
 from distutils.log import error
 from sqlite3 import connect
 from tkinter import Button
@@ -5,11 +6,14 @@ from unicodedata import name
 from kivy.app import App
 from kivy.app import runTouchApp
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.popup import Popup
 from kivy.uix.vkeyboard import VKeyboard
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.properties import ObjectProperty
 from kivy.config import Config
 from kivy.lang import Builder
+import openpyxl
+import pandas.io.sql as sql
 import pymysql.cursors
 Config.set('kivy', 'keyboard_mode', 'systemanddock')
 
@@ -42,6 +46,8 @@ class mainPage(Screen):
 
     # to register new user into db
     def register(self):
+        self.ids.studentID.text = ""
+        self.ids.studentELE.text = ""
         App.get_running_app().root.transition.direction = "left"
         App.get_running_app().root.current = "register"
         
@@ -58,10 +64,69 @@ class mainPage(Screen):
             App.get_running_app().root.transition.direction = "left"
             App.get_running_app().root.current = "register"
 
+    
+    # go to admin page to export sql data
+    def admin_btn(self):
+        App.get_running_app().root.transition.direction = "left"
+        App.get_running_app().root.current = "admin"
+        
 # app.root.current = "prompt"
 #                     root.manager.transition.direction = "left"
 
-# registerPage Class******************************************************************************
+
+
+class AdminPage(Screen):
+    admin_username = ObjectProperty(None)
+    admin_password = ObjectProperty(None)
+
+    def keyboard(self):
+        keyboard = VKeyboard()
+        return keyboard
+    
+    # Text Verification
+    def text_check(self):
+        username = self.ids.admin_username.text
+        password = self.ids.admin_password.text
+
+        if username =="" or password =="":
+            self.ids.downloadbtn.disabled = True
+        else:
+            self.ids.downloadbtn.disabled = False
+
+    # to unsuccessful popup
+    def invalid_msg(self):
+        popup = FailedPopup()
+        popup.open()
+
+    # to success popup
+    def success_msg(self):
+        popup = SuccessPopup()
+        popup.open()
+        
+    def back(self):
+        self.ids.admin_username.text = ""
+        self.ids.admin_password.text = ""
+        App.get_running_app().root.transition.direction = "right"
+        App.get_running_app().root.current = "main"
+
+    # export sql data into spreadsheet, will pop up unsuccessful msg if incorrect username and password else pop up successful msg
+    def downloadbtn(self):
+        result = database.download(database, self.ids.admin_username.text, self.ids.admin_password.text)
+        self.ids.admin_username.text = ""
+        self.ids.admin_password.text = ""
+        if result:
+                self.success_msg()
+                App.get_running_app().root.transition.direction = "right"
+                App.get_running_app().root.current = "main"
+        else:
+            self.invalid_msg()
+
+
+class FailedPopup(Popup):
+    pass
+
+class SuccessPopup(Popup):
+    pass
 
 class registerPage(Screen):
     studentName = ObjectProperty(None)
@@ -77,7 +142,7 @@ class registerPage(Screen):
         # database.read(database)
         return keyboard
     
-    def completebtn(self):
+    def text_check(self):
         Id = self.ids.studentID.text
         name = self.ids.studentName.text
         programme = self.ids.studentProgramme.text
@@ -103,10 +168,14 @@ class registerPage(Screen):
                         self.ids.studentProgramme.text, 
                         self.ids.studentPhone.text, 
                         self.ids.studentEmail.text)
+        self.ids.studentID.text = ""
+        self.ids.studentName.text = ""
+        self.ids.studentProgramme.text = "" 
+        self.ids.studentPhone.text = ""
+        self.ids.studentEmail.text =""
         App.get_running_app().root.transition.direction = "right"
         App.get_running_app().root.current = "main"
         
-# end of registerPage Class*************************************************************************
         
 class promptPage(Screen):
     pass
@@ -119,12 +188,13 @@ class summaryPage(Screen):
 
 class WindowManager(ScreenManager):
     pass
+
 class database():
     def connection():
         connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='Mysql0644961-',
-                             database='RVM',
+                             password='password',
+                             database='rvm1',
                              cursorclass=pymysql.cursors.DictCursor)
         if connection:
             print("success")
@@ -180,11 +250,26 @@ class database():
             connection.commit()
             return result
 
-kv = Builder.load_file("my.kv")
+    def download(self, username, password):
+        try:
+            connection = pymysql.connect(host='localhost',
+                             user=username,
+                             password=password,
+                             database='rvm1',
+                             cursorclass=pymysql.cursors.DictCursor)
+            if connection:
+                df = sql.read_sql('select * from student', connection)
+                df.to_excel('rvm.xlsx')
+                return True
+        except Exception as es:
+            return False
+            
+
+kv = Builder.load_file("my.kv.txt")
 
 sm = WindowManager()
 # registerPage is added to allow navigation to registerPage when register button is clicked
-screens = [mainPage(name="main"), registerPage(name="register"), promptPage(name="prompt"), loadingPage(name="loading")]
+screens = [mainPage(name="main"), AdminPage(name="admin"), registerPage(name="register"), promptPage(name="prompt"), loadingPage(name="loading")]
 for screen in screens:
     sm.add_widget(screen)
 
